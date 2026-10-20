@@ -1,7 +1,7 @@
 {
   "name": "dsh-user-portrait",
   "version": "0.1.0",
-  "description": "Learns your habits, skills and working style from everyday conversations and work summaries, keeps an evidence-backed portrait you can use as resume material, and feeds it back as context so the model answers the way you think.",
+  "description": "Learns your habits, skills and working style from everyday conversations and work summaries, keeps an evidence-backed portrait you can use as resume material, and offers a prompt hint plus tools that let the model consult it on demand.",
   "license": "MIT",
   "author": "loliisgood",
   "repository": {
@@ -50,7 +50,7 @@
   ],
   "meta": {
     "title": "人物画像",
-    "description": "从日常对话与工作总结中提炼你的习惯、技能与偏好，形成可核对的人物画像：既可作简历与自我总结的参考资料，也可按会话注入提示词，让模型更了解你、回答更贴合你的想法。"
+    "description": "从日常对话与工作总结中提炼你的习惯、技能与偏好，形成可核对的人物画像：既可作简历与自我总结的参考资料，也可按会话开启画像提示、让模型按需读取，回答更贴合你的想法。"
   },
   "dsh": {
     "bundle": {

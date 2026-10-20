@@ -1,6 +1,6 @@
 # dsh-user-portrait
 
-> A DSH Host/Client plugin that learns your habits, skills and preferences from everyday conversations and work summaries — a reviewable portrait for resumes and self-review, and context that makes the model answer the way you think.
+> A DSH Host/Client plugin that learns your habits, skills and preferences from everyday conversations and work summaries — a reviewable portrait for resumes and self-review, plus a prompt hint and tools that let the model consult it on demand.
 
 English | [中文](./README.zh.md)
 

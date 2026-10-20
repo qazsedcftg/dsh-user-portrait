@@ -1,4 +1,4 @@
 {
   "title": "User Portrait",
-  "description": "Learns your habits, skills and preferences from everyday conversations and work summaries: a reviewable portrait for resumes and self-review, and context that makes the model answer the way you think."
+  "description": "Learns your habits, skills and preferences from everyday conversations and work summaries: a reviewable portrait for resumes and self-review, plus a prompt hint and tools that let the model consult it on demand."
 }
