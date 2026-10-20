@@ -45,6 +45,10 @@ at 0.1.0 instead of the internal 1.x numbering.
 - The READMEs were reduced to what a user needs; the design notes, runtime
   constraints, verification log, known limitations and file tree were dropped.
   The demo screenshot was replaced by a first-run empty-state image.
+- The plugin and repository descriptions now name the three intended uses:
+  learning habits and skills from conversations and work summaries, serving as
+  resume / self-review material, and acting as context that makes the model's
+  answers fit the user.
 - The twelve suites now share `test/_harness.mjs` for assertions and summary,
   resolve every path from `test/_paths.mjs`, and `npm run check:package`
   rejects machine-specific paths under `test/`.

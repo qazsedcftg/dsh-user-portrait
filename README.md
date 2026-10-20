@@ -1,6 +1,6 @@
 # dsh-user-portrait
 
-> A DSH Host/Client plugin that turns what you raise in every session into a structured, reviewable portrait of you — and hands it to the model on demand.
+> A DSH Host/Client plugin that learns your habits, skills and preferences from everyday conversations and work summaries — a reviewable portrait for resumes and self-review, and context that makes the model answer the way you think.
 
 English | [中文](./README.zh.md)
 
@@ -10,6 +10,7 @@ English | [中文](./README.zh.md)
 
 - **Per-turn extraction.** After each turn a background job asks the model for a short “what I asked / key points / what you answered / corrections” digest and appends the evidence to a ledger. A turn with no new evidence makes no model call.
 - **Nine dimensions.** Daily life (personality & communication, interests, background, current focus, recent state) and technical (skills & stack, working style, boundaries, sensitivities).
+- **Resume and self-review material.** Skills, working style and background accumulate as evidence and can be exported as Markdown.
 - **Every conclusion is verifiable.** It carries a confidence level, a basis (your words / the model's answer / both) and its source sessions. Similar conclusions are merged; conflicting ones supersede the old entry.
 - **Reviewable and correctable.** The right-side panel has four tabs (dimensions, my notes, session log, evidence timeline) with editing, confidence up/down, retire and restore, permanent delete, search, Markdown export and a conclusion cap.
 - **Four model tools.** `portrait_read`, `portrait_search`, `portrait_history`, `portrait_maintain`.
