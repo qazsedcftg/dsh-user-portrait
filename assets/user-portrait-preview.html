@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>人物画像面板 · 本地设计预览</title>
+    <style>
+      :root {
+        --dsw-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        --dsw-radius-xs: 4px;
+        --dsw-radius-sm: 8px;
+        --dsw-radius-md: 12px;
+        --dsw-radius-lg: 16px;
+        --dsw-radius-panel: 28px;
+        --dsw-focus-ring-width: 1px;
+        --dsw-focus-ring-color: #3b82f6;
+        /* Light palette (the app's own aliases). */
+        --dsw-alias-bg-base: #ffffff;
+        --dsw-alias-bg-layer-1: #fafafa;
+        --dsw-alias-bg-layer-2: #f5f5f6;
+        --dsw-alias-bg-layer-3: #ffffff;
+        --dsw-alias-bg-layer-4: #ececee;
+        --dsw-alias-bg-module-platform: #f2f2f4;
+        --dsw-alias-border-l1: #ececee;
+        --dsw-alias-border-l2: #e3e3e6;
+        --dsw-alias-border-l3: #d9d9de;
+        --dsw-alias-border-l4: #cdcdd3;
+        --dsw-alias-brand-primary: #4d6bfe;
+        --dsw-alias-button-primary-fill: #4d6bfe;
+        --dsw-alias-button-primary-hover: #3f5ae0;
+        --dsw-alias-button-tool-bar-fill: #f2f2f4;
+        --dsw-alias-button-tool-bar-hover: #e8e8ec;
+        --dsw-alias-button-ghost-active-fill: #ffffff;
+        --dsw-alias-button-ghost-active-border: #d9d9de;
+        --dsw-alias-interactive-bg-hover: rgba(0, 0, 0, 0.05);
+        --dsw-alias-interactive-bg-active: rgba(0, 0, 0, 0.08);
+        --dsw-alias-interactive-bg-hover-danger: rgba(220, 38, 38, 0.08);
+        --dsw-alias-label-primary: #1a1a1c;
+        --dsw-alias-label-primary-foreground: #ffffff;
+        --dsw-alias-label-secondary: #5c5c66;
+        --dsw-alias-label-tertiary: #8e8e99;
+        --dsw-alias-label-dimmed: #b0b0b8;
+        --dsw-alias-label-error: #d93838;
+        --dsw-alias-state-success-primary: #17a34a;
+        --dsw-alias-state-warn-primary: #d97706;
+        --dsw-alias-state-error-primary: #dc2626;
+        --dsw-alias-state-business-primary: #2563eb;
+        --dsw-alias-state-idle-primary: #9ca3af;
+      }
+      body.dark {
+        --dsw-alias-bg-base: #151517;
+        --dsw-alias-bg-layer-1: #1c1c1f;
+        --dsw-alias-bg-layer-2: #232327;
+        --dsw-alias-bg-layer-3: #2a2a2f;
+        --dsw-alias-bg-layer-4: #33333a;
+        --dsw-alias-bg-module-platform: #232327;
+        --dsw-alias-border-l1: #2c2c32;
+        --dsw-alias-border-l2: #35353c;
+        --dsw-alias-border-l3: #414149;
+        --dsw-alias-border-l4: #4d4d56;
+        --dsw-alias-interactive-bg-hover: rgba(255, 255, 255, 0.06);
+        --dsw-alias-interactive-bg-active: rgba(255, 255, 255, 0.1);
+        --dsw-alias-interactive-bg-hover-danger: rgba(248, 113, 113, 0.14);
+        --dsw-alias-label-primary: #ececf1;
+        --dsw-alias-label-secondary: #a9a9b4;
+        --dsw-alias-label-tertiary: #7c7c88;
+        --dsw-alias-label-dimmed: #61616c;
+        --dsw-alias-label-error: #f87171;
+        --dsw-alias-button-tool-bar-fill: #26262b;
+        --dsw-alias-button-tool-bar-hover: #303038;
+      }
+      html, body { margin: 0; height: 100%; }
+      body {
+        background: #e9e9ee;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        color: #1a1a1c;
+        display: flex;
+        min-height: 100%;
+      }
+      body.dark { background: #0d0d0f; color: #ececf1; }
+      .stage {
+        display: flex;
+        gap: 24px;
+        padding: 24px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      .pane {
+        width: 340px;
+        height: 2050px;
+        display: flex;
+        overflow: hidden;
+        border-radius: 14px;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+        border: 0.5px solid rgba(0, 0, 0, 0.12);
+        background: var(--dsw-alias-bg-base);
+      }
+      .pane > .dup-root { flex: 1; min-width: 0; }
+      .notes {
+        width: 380px;
+        padding: 16px 18px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 0.5px solid rgba(0, 0, 0, 0.1);
+        font-size: 13px;
+        line-height: 1.75;
+      }
+      body.dark .notes { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.1); }
+      .notes h1 { font-size: 16px; margin: 0 0 8px; }
+      .notes h2 { font-size: 13px; margin: 16px 0 6px; }
+      .notes code { font-family: Consolas, "SF Mono", monospace; font-size: 12px; }
+      .notes ul { margin: 4px 0 0; padding-left: 18px; }
+      .toggle {
+        position: fixed;
+        right: 18px;
+        top: 18px;
+        z-index: 5;
+      }
+      /* ---- the panel stylesheet, verbatim from client.js ---- */
+
+/* The root fills the pane, and keeps a usable floor of its own so a pane that
+ * hands down no height can never collapse the panel into blankness. */
+.dup-root{box-sizing:border-box;display:flex;flex-direction:column;height:100%;min-height:100%;background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-primary);font-family:var(--dsw-font-family);font-size:13px}
+.dup-head{padding:12px 14px 10px;border-bottom:0.5px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-base)}
+.dup-title-row{display:flex;align-items:center;gap:8px;min-height:28px}
+.dup-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;line-height:22px;flex:1;min-width:0}
+.dup-dot{width:8px;height:8px;border-radius:50%;background:var(--dsw-alias-brand-primary);flex:none}
+.dup-meta{margin-top:6px;color:var(--dsw-alias-label-secondary);font-size:12px;line-height:1.6}
+.dup-meta-line{color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:1.6;margin-top:2px;word-break:break-all}
+.dup-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+
+/* Controls: the app's compact (sm) button geometry — 28px, 8px corners. */
+.dup-btn{box-sizing:border-box;appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;height:28px;padding:0 10px;border:0;border-radius:var(--dsw-radius-sm);background:transparent;color:var(--dsw-alias-label-primary);font-family:inherit;font-size:12px;line-height:18px;cursor:pointer;transition:background-color 120ms ease,border-color 120ms ease,color 120ms ease}
+.dup-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}
+.dup-btn:active:not(:disabled){background:var(--dsw-alias-interactive-bg-active)}
+.dup-btn:focus-visible{outline:var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color,var(--dsw-alias-state-business-primary));outline-offset:1px}
+.dup-btn:disabled{opacity:.4;cursor:not-allowed}
+.dup-btn[data-variant=primary]{background:var(--dsw-alias-button-primary-fill);color:var(--dsw-alias-label-primary-foreground)}
+.dup-btn[data-variant=primary]:hover:not(:disabled){background:var(--dsw-alias-button-primary-hover)}
+.dup-btn[data-variant=outline]{border:0.5px solid var(--dsw-alias-border-l3)}
+.dup-btn[data-variant=toolbar]{background:var(--dsw-alias-button-tool-bar-fill)}
+.dup-btn[data-variant=toolbar]:hover:not(:disabled){background:var(--dsw-alias-button-tool-bar-hover)}
+.dup-btn[data-variant=icon]{width:28px;padding:0;color:var(--dsw-alias-label-secondary)}
+.dup-icon{display:inline-flex;flex:none;align-items:center;justify-content:center;width:14px;height:14px}
+.dup-icon svg{display:block}
+
+.dup-body{flex:1;min-height:0;overflow:auto;padding:10px 12px 28px}
+.dup-section{margin-bottom:14px}
+.dup-section-head{display:flex;align-items:center;gap:8px;padding:8px 2px;position:sticky;top:0;background:var(--dsw-alias-bg-base);z-index:1}
+.dup-section-name{font-weight:600;font-size:13px;line-height:20px}
+.dup-section-count{margin-left:auto;color:var(--dsw-alias-label-tertiary);font-size:11px;white-space:nowrap}
+.dup-group{margin:2px 0 18px}
+.dup-group-head{display:flex;align-items:baseline;gap:8px;padding:0 2px 8px;border-bottom:0.5px solid var(--dsw-alias-border-l1);margin-bottom:10px}
+.dup-group-name{font-size:13px;font-weight:600;line-height:20px}
+.dup-group-hint{margin:4px 2px 10px;color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:1.6}
+.dup-group-total{margin-left:auto;color:var(--dsw-alias-label-tertiary);font-size:11px;white-space:nowrap}
+
+.dup-entry{border:0.5px solid var(--dsw-alias-border-l1);border-radius:var(--dsw-radius-md);padding:10px 12px;margin-bottom:8px;background:var(--dsw-alias-bg-layer-1)}
+.dup-entry:hover{border-color:var(--dsw-alias-border-l2)}
+.dup-entry[data-status=superseded],.dup-entry[data-status=retired]{opacity:.62}
+.dup-entry-text{line-height:1.6;word-break:break-word}
+.dup-entry-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px;color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:17px}
+.dup-src{margin-top:6px;color:var(--dsw-alias-label-tertiary);font-size:11px;line-height:1.6;word-break:break-word}
+/* A search hit: the matched substring is marked with the brand tint, not a
+ * hard-coded yellow, so it follows the theme. */
+.dup-mark{background:color-mix(in srgb,var(--dsw-alias-state-business-primary) 22%,transparent);color:inherit;border-radius:2px;padding:0 1px}
+.dup-entry[data-kind=search-hit]{cursor:pointer}
+.dup-entry[data-kind=search-hit]:hover{border-color:var(--dsw-alias-state-business-primary)}
+/* The出处 reads as a count; hovering it reveals sessions, turns and the excerpt. */
+.dup-src-count{cursor:help;border-bottom:1px dashed var(--dsw-alias-border-l3);padding-bottom:1px}
+.dup-src-count:hover{color:var(--dsw-alias-label-secondary);border-bottom-color:var(--dsw-alias-border-l4)}
+.dup-entry-actions{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin-top:8px}
+.dup-entry-menu{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:8px;padding:6px;border-radius:var(--dsw-radius-sm);background:var(--dsw-alias-bg-layer-2);border:0.5px solid var(--dsw-alias-border-l1)}
+.dup-entry-menu .dup-mini{opacity:1}
+
+/* Composer portrait switch: a compact pill next to the permission selector. */
+.dup-mode{position:relative;display:inline-flex;align-items:center}
+.dup-mode-trigger{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;border:0.5px solid var(--dsw-alias-border-l4);background:transparent;color:var(--dsw-alias-label-secondary);font-size:12px;cursor:pointer;transition:background-color 120ms ease,color 120ms ease,border-color 120ms ease}
+.dup-mode-trigger:hover{background:var(--dsw-alias-interactive-bg-hover)}
+.dup-mode-trigger[data-on=true]{color:var(--dsw-alias-label-primary);border-color:var(--dsw-alias-state-business-primary);background:color-mix(in srgb,var(--dsw-alias-state-business-primary) 10%,transparent)}
+.dup-mode-dot{width:6px;height:6px;border-radius:999px;background:var(--dsw-alias-border-l4)}
+.dup-mode-dot[data-on=true]{background:var(--dsw-alias-state-business-primary)}
+.dup-mode-pop{position:absolute;bottom:calc(100% + 6px);left:0;z-index:40;width:236px;padding:8px;border-radius:var(--dsw-radius-md);background:var(--dsw-alias-bg-layer-1);border:0.5px solid var(--dsw-alias-border-l2);box-shadow:0 8px 24px color-mix(in srgb,var(--dsw-alias-label-primary) 18%,transparent)}
+.dup-mode-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 4px}
+.dup-mode-label{display:flex;flex-direction:column;gap:1px;min-width:0}
+.dup-mode-name{font-size:12px;color:var(--dsw-alias-label-primary)}
+.dup-mode-hint{font-size:10px;color:var(--dsw-alias-label-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dup-mode-switch{position:relative;flex:none;width:30px;height:16px;border-radius:999px;border:0.5px solid var(--dsw-alias-border-l3);background:var(--dsw-alias-bg-module-platform);cursor:pointer;padding:0;transition:background-color 120ms ease}
+.dup-mode-switch::after{content:'';position:absolute;top:1px;left:1px;width:12px;height:12px;border-radius:999px;background:var(--dsw-alias-label-tertiary);transition:transform 120ms ease,background-color 120ms ease}
+.dup-mode-switch[data-on=true]{background:var(--dsw-alias-state-business-primary);border-color:var(--dsw-alias-state-business-primary)}
+.dup-mode-switch[data-on=true]::after{transform:translateX(14px);background:var(--dsw-alias-label-primary-foreground)}
+.dup-mode-switch:disabled{opacity:.45;cursor:default}
+.dup-mode-foot{margin-top:4px;padding:4px;font-size:10px;color:var(--dsw-alias-label-tertiary)}
+
+/* Status chips follow the Tag geometry: 17px line, 11px text, fully round. */
+.dup-chip{display:inline-flex;align-items:center;border-radius:999px;padding:1px 8px;font-size:11px;line-height:17px;font-weight:500;white-space:nowrap}
+/* The 编辑 control is a chip-sized button rather than a mini text link: same
+   geometry as the confidence badge, filled with the primary colour and the
+   foreground token that is white on that fill in the light theme. */
+.dup-edit-chip{display:inline-flex;align-items:center;border:0;border-radius:999px;padding:1px 8px;font-size:11px;line-height:17px;font-weight:500;white-space:nowrap;cursor:pointer;background:var(--dsw-alias-button-primary-fill);color:var(--dsw-alias-label-primary-foreground);transition:background-color 120ms ease,opacity 120ms ease}
+.dup-edit-chip:hover:not(:disabled){background:var(--dsw-alias-button-primary-hover)}
+.dup-edit-chip:disabled{opacity:.5;cursor:default}
+.dup-edit-chip[data-open=true]{background:var(--dsw-alias-button-primary-hover)}
+.dup-chip[data-tone=outline]{border:0.5px solid var(--dsw-alias-border-l4);color:var(--dsw-alias-label-tertiary)}
+.dup-chip[data-tone=neutral]{background:var(--dsw-alias-bg-module-platform);color:var(--dsw-alias-label-secondary)}
+.dup-chip[data-tone=quiet]{color:var(--dsw-alias-label-tertiary)}
+.dup-chip[data-tone=low]{background:color-mix(in srgb,var(--dsw-alias-state-error-primary) 10%,transparent);color:var(--dsw-alias-state-error-primary)}
+.dup-chip[data-tone=success]{background:color-mix(in srgb,var(--dsw-alias-state-success-primary) 10%,transparent);color:var(--dsw-alias-state-success-primary)}
+.dup-chip[data-tone=info]{background:color-mix(in srgb,var(--dsw-alias-state-business-primary) 10%,transparent);color:var(--dsw-alias-state-business-primary)}
+.dup-chip[data-tone=warning]{background:color-mix(in srgb,var(--dsw-alias-state-warn-primary) 12%,transparent);color:var(--dsw-alias-state-warn-primary)}
+/* A mixed basis: part user words, part model inference. Tinted with both signals
+ * (business for the user's side, warn for the inference) so it reads as its own
+ * state rather than as one of the two. */
+.dup-chip[data-tone=mixed]{background:color-mix(in srgb,var(--dsw-alias-state-warn-primary) 10%,transparent);color:var(--dsw-alias-label-secondary);border:0.5px solid color-mix(in srgb,var(--dsw-alias-state-warn-primary) 30%,transparent)}
+.dup-chip[data-tone=danger]{background:color-mix(in srgb,var(--dsw-alias-state-error-primary) 10%,transparent);color:var(--dsw-alias-state-error-primary)}
+
+/* Row actions: 24px ghost icon-buttons revealed on hover or focus. */
+.dup-mini{box-sizing:border-box;appearance:none;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 6px;border:0;border-radius:var(--dsw-radius-sm);background:transparent;color:var(--dsw-alias-label-secondary);font-family:inherit;font-size:11px;line-height:17px;cursor:pointer}
+.dup-entry-actions .dup-mini{opacity:0;transition:opacity 120ms ease,background-color 120ms ease,color 120ms ease}
+.dup-entry:hover .dup-mini,.dup-entry:focus-within .dup-mini{opacity:1}
+.dup-mini:hover:not(:disabled){background:var(--dsw-alias-bg-layer-4);color:var(--dsw-alias-label-primary)}
+.dup-mini:focus-visible{outline:var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color,var(--dsw-alias-state-business-primary));outline-offset:1px}
+.dup-mini:disabled{opacity:.4;cursor:not-allowed}
+.dup-mini[data-variant=danger]:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-danger);color:var(--dsw-alias-label-error)}
+.dup-mini[data-variant=keep]{opacity:1}
+/* The confidence controls stay visible: raising and lowering a conclusion is a
+ * first-class action, not a hover discovery. Editing and deleting still reveal on
+ * hover, so a row reads as a conclusion first. */
+.dup-entry-actions .dup-mini[data-variant=confidence]{opacity:1;color:var(--dsw-alias-label-secondary)}
+
+/* Fields: the settings form's control geometry. */
+.dup-input,.dup-textarea,.dup-select{box-sizing:border-box;width:100%;border:0.5px solid var(--dsw-alias-border-l4);border-radius:var(--dsw-radius-md);background:var(--dsw-alias-bg-layer-3);color:var(--dsw-alias-label-primary);padding:0 12px;font-family:inherit;font-size:13px;line-height:34px;height:34px}
+.dup-textarea{min-height:72px;padding:8px 12px;line-height:1.6;height:auto;resize:vertical}
+.dup-input::placeholder,.dup-textarea::placeholder{color:var(--dsw-alias-label-dimmed)}
+.dup-input:focus-visible,.dup-textarea:focus-visible,.dup-select:focus-visible{outline:none;border-color:var(--dsw-alias-state-business-primary)}
+.dup-field-row{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+
+.dup-row{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.dup-empty{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:1.6;padding:6px 2px}
+.dup-turn{border-left:2px solid var(--dsw-alias-border-l2);padding:2px 0 2px 10px;margin-bottom:10px}
+.dup-turn-q{line-height:1.6;word-break:break-word}
+.dup-turn-a{color:var(--dsw-alias-label-secondary);margin-top:4px;line-height:1.6;word-break:break-word}
+.dup-pre{white-space:pre-wrap;word-break:break-word;font-size:12px;line-height:1.7;color:var(--dsw-alias-label-secondary);margin:6px 0 0}
+
+/* Tabs: the segmented-tab track with a sliding raised indicator. */
+.dup-tabs{position:relative;display:flex;gap:2px;margin-top:10px;padding:4px;border-radius:var(--dsw-radius-lg);background:var(--dsw-alias-bg-module-platform)}
+.dup-tab-indicator{position:absolute;top:4px;bottom:4px;left:4px;box-sizing:border-box;border:0.5px solid var(--dsw-alias-border-l3);border-radius:var(--dsw-radius-md);background:var(--dsw-alias-bg-layer-3);transition:transform 180ms ease,width 180ms ease;pointer-events:none}
+.dup-tab{position:relative;z-index:1;box-sizing:border-box;appearance:none;flex:1 1 0;min-width:0;display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 6px;border:0;border-radius:var(--dsw-radius-md);background:transparent;color:var(--dsw-alias-label-secondary);font-family:inherit;font-size:12px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:color 180ms ease}
+.dup-tab:hover{color:var(--dsw-alias-label-primary)}
+.dup-tab[data-active=true]{color:var(--dsw-alias-label-primary);font-weight:600}
+.dup-tab:focus-visible{outline:none;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+
+/* Status bars: tinted state surface with a solid leading edge. */
+.dup-status{display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 10px;border-left:2px solid var(--dsw-alias-border-l3);border-radius:var(--dsw-radius-sm);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-secondary);font-size:12px;line-height:1.6}
+.dup-status[data-tone=success]{border-left-color:var(--dsw-alias-state-success-primary);background:color-mix(in srgb,var(--dsw-alias-state-success-primary) 10%,transparent);color:var(--dsw-alias-state-success-primary)}
+.dup-status[data-tone=error]{border-left-color:var(--dsw-alias-state-error-primary);background:color-mix(in srgb,var(--dsw-alias-state-error-primary) 10%,transparent);color:var(--dsw-alias-state-error-primary)}
+.dup-status[data-tone=info]{border-left-color:var(--dsw-alias-state-business-primary);background:color-mix(in srgb,var(--dsw-alias-state-business-primary) 10%,transparent);color:var(--dsw-alias-state-business-primary)}
+.dup-status[data-tone=warning]{border-left-color:var(--dsw-alias-state-warn-primary);background:color-mix(in srgb,var(--dsw-alias-state-warn-primary) 12%,transparent);color:var(--dsw-alias-state-warn-primary)}
+.dup-status-text{min-width:0;word-break:break-word}
+.dup-progress{flex:none;width:60px;height:3px;border-radius:999px;background:color-mix(in srgb,currentColor 20%,transparent);overflow:hidden}
+.dup-progress > span{display:block;height:100%;border-radius:999px;background:currentColor}
+
+/* One overlay for both dialogs (导出 / 结论上限). */
+.dup-overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:24px;background:color-mix(in srgb,var(--dsw-alias-label-primary) 30%,transparent)}
+.dup-dialog{width:100%;max-width:420px;max-height:min(76vh,620px);display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:var(--dsw-radius-lg);background:var(--dsw-alias-bg-layer-1);border:0.5px solid var(--dsw-alias-border-l2);box-shadow:0 12px 40px color-mix(in srgb,var(--dsw-alias-label-primary) 24%,transparent);overflow:auto}
+.dup-dialog-title{font-size:13px;font-weight:600;color:var(--dsw-alias-label-primary)}
+.dup-dialog-hint{font-size:11px;line-height:1.7;color:var(--dsw-alias-label-tertiary)}
+.dup-option{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dsw-alias-label-primary);padding:4px 0}
+.dup-option[data-locked=true]{color:var(--dsw-alias-label-tertiary)}
+.dup-cap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.dup-cap-field{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--dsw-alias-label-tertiary)}
+.dup-cap-field input{width:100%;box-sizing:border-box;padding:5px 8px;border-radius:var(--dsw-radius-sm);border:0.5px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary);font-size:12px}
+.dup-cap-usage{font-size:11px;color:var(--dsw-alias-label-secondary);line-height:1.7}
+.dup-cap-usage[data-over=true]{color:var(--dsw-alias-state-error-primary)}
+
+/* First paint: quiet skeleton rows instead of a bare sentence. */
+.dup-skeleton{height:56px;border-radius:var(--dsw-radius-md);background:var(--dsw-alias-bg-layer-1);border:0.5px solid var(--dsw-alias-border-l1);margin-bottom:8px;opacity:.7}
+@media (prefers-reduced-motion:reduce){.dup-tab,.dup-tab-indicator,.dup-mini,.dup-entry-actions .dup-mini{transition:none}}
+
+    </style>
+  </head>
+  <body>
+    <button type="button" class="dup-btn" data-variant="outline toggle" id="theme">切换浅色 / 深色</button>
+    <div class="stage">
+      <div class="pane">
+        <div class="dup-root">
+
+  <div class="dup-head">
+    <div class="dup-title-row">
+      <div class="dup-title"><span class="dup-dot"></span>人物画像</div>
+      <button type="button" class="dup-btn" data-variant="icon"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1" stroke-miterlimit="10"><path d="M8 9.75012C8.9665 9.75012 9.75 8.96662 9.75 8.00012C9.75 7.03362 8.9665 6.25012 8 6.25012C7.0335 6.25012 6.25 7.03362 6.25 8.00012C6.25 8.96662 7.0335 9.75012 8 9.75012Z" stroke="currentColor" stroke-miterlimit="10"></path><path d="M13.0107 7.79377C12.9505 7.89401 12.9205 7.94413 12.9205 7.99951C12.9205 8.0549 12.9505 8.10502 13.0106 8.20528L13.9849 9.83006C14.045 9.93029 14.0751 9.9804 14.0751 10.0358C14.0751 10.0911 14.045 10.1413 13.9849 10.2415L13.0037 11.8777C12.9468 11.9726 12.9184 12.0201 12.8725 12.0461C12.8267 12.072 12.7713 12.072 12.6607 12.072H10.6704C10.5598 12.072 10.5045 12.072 10.4586 12.098C10.4128 12.1239 10.3843 12.1714 10.3274 12.2662L9.33825 13.9142C9.28133 14.009 9.25287 14.0564 9.20703 14.0823C9.16118 14.1083 9.10588 14.1083 8.99529 14.1083H7.00486C6.89426 14.1083 6.83896 14.1083 6.79312 14.0823C6.74727 14.0564 6.71881 14.009 6.6619 13.9142L5.67273 12.2662C5.61581 12.1714 5.58735 12.1239 5.54151 12.098C5.49566 12.072 5.44036 12.072 5.32977 12.072H3.33945C3.2288 12.072 3.17347 12.072 3.12761 12.0461C3.08176 12.0201 3.0533 11.9726 2.9964 11.8777L2.0152 10.2415C1.9551 10.1413 1.92505 10.0911 1.92505 10.0358C1.92505 9.9804 1.9551 9.93029 2.0152 9.83006L2.98951 8.20528C3.04963 8.10502 3.07969 8.0549 3.07969 7.99951C3.07968 7.94413 3.04961 7.89401 2.98946 7.79377L2.01529 6.17011C1.95514 6.06987 1.92507 6.01975 1.92507 5.96437C1.92506 5.90899 1.95512 5.85886 2.01524 5.7586L2.9964 4.1224C3.0533 4.0275 3.08176 3.98005 3.12761 3.95408C3.17347 3.92811 3.2288 3.92811 3.33945 3.92811H5.32977C5.44036 3.92811 5.49566 3.92811 5.54151 3.90216C5.58735 3.87621 5.61581 3.82879 5.67273 3.73397L6.6619 2.08599C6.71881 1.99116 6.74727 1.94375 6.79312 1.9178C6.83896 1.89185 6.89426 1.89185 7.00486 1.89185H8.99529C9.10588 1.89185 9.16118 1.89185 9.20703 1.9178C9.25287 1.94375 9.28133 1.99116 9.33825 2.08599L10.3274 3.73397C10.3843 3.82879 10.4128 3.87621 10.4586 3.90216C10.5045 3.92811 10.5598 3.92811 10.6704 3.92811H12.6607C12.7713 3.92811 12.8267 3.92811 12.8725 3.95408C12.9184 3.98005 12.9468 4.0275 13.0037 4.1224L13.9849 5.7586C14.045 5.85886 14.0751 5.90899 14.0751 5.96437C14.0751 6.01975 14.045 6.06987 13.9849 6.17011L13.0107 7.79377Z" stroke="currentColor" stroke-miterlimit="10"></path></svg></button>
+    </div>
+    <div class="dup-meta">10 条生效结论 · 覆盖 7/9 个维度 · 逐轮摘要 14 个会话 · 证据 96 条</div>
+    <div class="dup-status" data-tone="info"><span class="dup-status-text">正在与 Host 同步…</span></div>
+    <div class="dup-status" data-tone="success"><span class="dup-status-text">已重新合并画像</span></div>
+    <div class="dup-toolbar">
+      <button type="button" class="dup-btn" data-variant="primary" title="立即重新提炼（不重读会话）&amp;#10;· 只用已经提炼出来的证据&amp;#10;· 只把现有证据重新合并，不重读会话&amp;#10;· 遵守结论上限；黑名单证据不参与"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1"><path d="M5.875 3C5.875 6.33333 7.54167 8 10.875 8C7.54167 8 5.875 9.66667 5.875 13C5.875 9.66667 4.20833 8 0.875 8C4.20833 8 5.875 6.33333 5.875 3Z" stroke="currentColor"></path><path d="M12.375 1.55823C12.375 3.39156 13.2917 4.30823 15.125 4.30823C13.2917 4.30823 12.375 5.22489 12.375 7.05823C12.375 5.22489 11.4583 4.30823 9.625 4.30823C11.4583 4.30823 12.375 3.39156 12.375 1.55823Z" stroke="currentColor"></path><path d="M12.375 10.4418C12.375 11.7751 13.0417 12.4418 14.375 12.4418C13.0417 12.4418 12.375 13.1084 12.375 14.4418C12.375 13.1084 11.7083 12.4418 10.375 12.4418C11.7083 12.4418 12.375 11.7751 12.375 10.4418Z" stroke="currentColor"></path></svg><span>立即重新提炼</span></button>
+      <button type="button" class="dup-btn" data-variant="outline" title="回填全部历史会话（只补没提炼过的）&amp;#10;· 跳过子代理会话&amp;#10;· 每个会话取最近 24 轮&amp;#10;· 跑完自动合并；黑名单证据照样排除"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1"><path d="M14.5001 8C14.5 9.28552 14.1188 10.5422 13.4045 11.611C12.6903 12.6799 11.6752 13.5129 10.4875 14.0049C9.29982 14.4968 7.99295 14.6255 6.73212 14.3747C5.4713 14.124 4.31314 13.505 3.4041 12.596C2.49514 11.687 1.87614 10.5288 1.62537 9.26798C1.37459 8.00716 1.50331 6.70028 1.99525 5.51261C2.48719 4.32494 3.32025 3.30981 4.3891 2.59557C5.45795 1.88134 6.71458 1.50008 8.0001 1.5C9.9001 1.5 11.7001 2.3 13.0001 3.6L14.5001 5.1" stroke="currentColor"></path><path d="M14.4999 1.5V5.1H10.8999" stroke="currentColor"></path></svg><span>回填全部历史会话</span></button>
+      <button type="button" class="dup-btn" data-variant="outline" title="重新提炼全部历史（重跑，不是重建）&amp;#10;· 忽略已处理标记，重新摘要所有会话&amp;#10;· 证据按内容去重&amp;#10;· 现有结论不清空；黑名单证据照样排除"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1"><path d="M13.5 2.5H2.5C1.94772 2.5 1.5 2.94772 1.5 3.5V4.5C1.5 5.05228 1.94772 5.5 2.5 5.5H13.5C14.0523 5.5 14.5 5.05228 14.5 4.5V3.5C14.5 2.94772 14.0523 2.5 13.5 2.5Z" stroke="currentColor"></path><path d="M2.5 5.5V13.5C2.5 13.7652 2.60536 14.0196 2.79289 14.2071C2.98043 14.3946 3.23478 14.5 3.5 14.5H12.5C12.7652 14.5 13.0196 14.3946 13.2071 14.2071C13.3946 14.0196 13.5 13.7652 13.5 13.5V5.5" stroke="currentColor"></path><path d="M6.5 9.5H9.5" stroke="currentColor"></path></svg><span>重新提炼全部历史</span></button>
+      <button type="button" class="dup-btn" data-variant="outline" title="更新于 2026-10-20 18:15 · 数据目录 .dsh/user-portrait · 已刷新 2026-10-20 18:15"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1"><path d="M14.5001 8C14.5 9.28552 14.1188 10.5422 13.4045 11.611C12.6903 12.6799 11.6752 13.5129 10.4875 14.0049C9.29982 14.4968 7.99295 14.6255 6.73212 14.3747C5.4713 14.124 4.31314 13.505 3.4041 12.596C2.49514 11.687 1.87614 10.5288 1.62537 9.26798C1.37459 8.00716 1.50331 6.70028 1.99525 5.51261C2.48719 4.32494 3.32025 3.30981 4.3891 2.59557C5.45795 1.88134 6.71458 1.50008 8.0001 1.5C9.9001 1.5 11.7001 2.3 13.0001 3.6L14.5001 5.1" stroke="currentColor"></path><path d="M14.4999 1.5V5.1H10.8999" stroke="currentColor"></path></svg><span>刷新</span></button>
+      <button type="button" class="dup-btn" data-variant="outline" title="未设置反馈网址（配置项 feedbackUrl）"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1"><path d="M5.875 3C5.875 6.33333 7.54167 8 10.875 8C7.54167 8 5.875 9.66667 5.875 13C5.875 9.66667 4.20833 8 0.875 8C4.20833 8 5.875 6.33333 5.875 3Z" stroke="currentColor"></path><path d="M12.375 1.55823C12.375 3.39156 13.2917 4.30823 15.125 4.30823C13.2917 4.30823 12.375 5.22489 12.375 7.05823C12.375 5.22489 11.4583 4.30823 9.625 4.30823C11.4583 4.30823 12.375 3.39156 12.375 1.55823Z" stroke="currentColor"></path><path d="M12.375 10.4418C12.375 11.7751 13.0417 12.4418 14.375 12.4418C13.0417 12.4418 12.375 13.1084 12.375 14.4418C12.375 13.1084 11.7083 12.4418 10.375 12.4418C11.7083 12.4418 12.375 11.7751 12.375 10.4418Z" stroke="currentColor"></path></svg><span>反馈与建议</span></button>
+    </div>
+  </div>
+
+  <div class="dup-tabs" role="tablist" aria-label="人物画像视图">
+    <span class="dup-tab-indicator" aria-hidden="true" style="width:calc((100% - 8px) / 4);transform:translateX(4px)"></span>
+    <button type="button" role="tab" class="dup-tab" data-active="true" aria-selected="true">画像维度</button><button type="button" role="tab" class="dup-tab" data-active="false" aria-selected="false">我的备注</button><button type="button" role="tab" class="dup-tab" data-active="false" aria-selected="false">会话记录</button><button type="button" role="tab" class="dup-tab" data-active="false" aria-selected="false">证据时间线</button>
+  </div>
+          <div class="dup-body">
+
+  <div class="dup-section" data-section="search">
+    <div class="dup-section-head">
+      <span class="dup-section-name">检索</span>
+      <span class="dup-section-count">2 条命中</span>
+    </div>
+    <div class="dup-row">
+      <input class="dup-input" style="flex:1;min-width:160px" value="galgame" readonly>
+      <button type="button" class="dup-btn" data-variant="ghost">清空</button>
+    </div>
+    <div class="dup-group-hint">点击结果可定位到下方对应条目。</div>
+    
+      <div class="dup-entry" data-kind="search-hit" data-status="active">
+        <div class="dup-entry-text">玩 <mark class="dup-mark">galgame</mark>（日式视觉小说），对病娇题材有兴趣</div>
+        <div class="dup-entry-foot">
+          <span class="dup-chip" data-tone="outline">兴趣与爱好</span>
+          <span class="dup-chip" data-tone="success">置信度 高</span>
+          <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+          <span>来源 1 处</span>
+        </div>
+      </div>
+      <div class="dup-entry" data-kind="search-hit" data-status="active">
+        <div class="dup-entry-text">玩 <mark class="dup-mark">galgame</mark>，并且偏好叙事驱动、有心理描写张力的题材</div>
+        <div class="dup-entry-foot">
+          <span class="dup-chip" data-tone="outline">兴趣与爱好</span>
+          <span class="dup-chip" data-tone="warning">置信度 中</span>
+          <span class="dup-chip" data-tone="mixed" title="一部分依据是用户的原话，一部分是模型的推断；置信度按「含推断」的上限计算">依据 · 用户的话 &amp; 模型应答</span>
+          <span>来源 1 处</span>
+        </div>
+      </div>
+  </div>
+
+  <div class="dup-group" data-section="discard">
+    <div class="dup-group-head">
+      <span class="dup-group-name">废弃</span>
+      <span class="dup-group-total">2 条</span>
+      <span style="margin-left:auto;flex:none;display:flex;gap:4px"><button type="button" class="dup-btn" data-variant="ghost" title="永久删除全部 2 条废弃结论（需二次确认）"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1"><path d="M1.28149 3.88831H14.7187" stroke="currentColor"></path><path d="M5.41602 3.88833V2.47962C5.41602 2.29282 5.52492 2.11366 5.71876 1.98157C5.9126 1.84948 6.17551 1.77527 6.44964 1.77527H9.55053C9.82466 1.77527 10.0876 1.84948 10.2814 1.98157C10.4753 2.11366 10.5842 2.29282 10.5842 2.47962V3.88833" stroke="currentColor"></path><path d="M2.57349 3.88831L3.19366 13.2943C3.21937 13.5502 3.33952 13.7872 3.53065 13.9593C3.72178 14.1313 3.97016 14.2259 4.22729 14.2246H11.7728C12.0299 14.2259 12.2783 14.1313 12.4694 13.9593C12.6605 13.7872 12.7807 13.5502 12.8064 13.2943L13.4266 3.88831" stroke="currentColor"></path><path d="M6.44946 6.98926V11.1238" stroke="currentColor"></path><path d="M9.55054 6.98926V11.1238" stroke="currentColor"></path></svg><span>清空</span></button><button type="button" class="dup-btn" data-variant="ghost"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1"><path d="M12 10L8.70711 6.70711C8.31658 6.31658 7.68342 6.31658 7.29289 6.70711L4 10" stroke="currentColor"></path></svg><span>收起</span></button></span>
+    </div>
+    <div class="dup-group-hint">这里安放已废弃 / 已取代 / 已删除的结论：它们不再计入画像，相关证据同时被移出提炼（黑名单），点「恢复」即可回到对应维度并重新计入。</div>
+    
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">能力与技术栈</span>
+          <span class="dup-section-count">2 条废弃</span>
+        </div>
+        
+        <div class="dup-entry" data-kind="conclusion" data-status="superseded">
+          <div class="dup-entry-text">偏好用 PowerShell 而不是 node 做文件操作</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="success" title="置信度">置信度 高</span>
+            <span class="dup-chip" data-tone="outline" title="首次 2026-09-30 19:15">已取代</span>
+            
+            <span class="dup-chip" data-tone="info">手动</span>
+          </div>
+        </div>
+        <div class="dup-entry" data-kind="conclusion" data-status="retired">
+          <div class="dup-entry-text">长期只写 Java，不碰前端</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="low" title="置信度">置信度 低</span>
+            <span class="dup-chip" data-tone="outline" title="首次 2026-09-24 19:15">已废弃</span>
+            <span class="dup-chip" data-tone="outline">删除</span>
+            <span class="dup-chip" data-tone="info">手动</span>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div class="dup-section">
+    <div class="dup-row"><button type="button" class="dup-btn" data-variant="outline"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1"><path d="M8 2V14" stroke="currentColor"></path><path d="M2 8H14" stroke="currentColor"></path></svg><span>手动新增条目</span></button><button type="button" class="dup-btn" data-variant="outline" title="当前上限：37/50 条（手动结论不计入）&amp;#10;统一 50 · 分组 20+30=50（取较大者 50 条）&amp;#10;手动新增不受上限阻挡，当前另有 4 条手动结论"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1" stroke-miterlimit="10"><path d="M8 9.75012C8.9665 9.75012 9.75 8.96662 9.75 8.00012C9.75 7.03362 8.9665 6.25012 8 6.25012C7.0335 6.25012 6.25 7.03362 6.25 8.00012C6.25 8.96662 7.0335 9.75012 8 9.75012Z" stroke="currentColor" stroke-miterlimit="10"></path><path d="M13.0107 7.79377C12.9505 7.89401 12.9205 7.94413 12.9205 7.99951C12.9205 8.0549 12.9505 8.10502 13.0106 8.20528L13.9849 9.83006C14.045 9.93029 14.0751 9.9804 14.0751 10.0358C14.0751 10.0911 14.045 10.1413 13.9849 10.2415L13.0037 11.8777C12.9468 11.9726 12.9184 12.0201 12.8725 12.0461C12.8267 12.072 12.7713 12.072 12.6607 12.072H10.6704C10.5598 12.072 10.5045 12.072 10.4586 12.098C10.4128 12.1239 10.3843 12.1714 10.3274 12.2662L9.33825 13.9142C9.28133 14.009 9.25287 14.0564 9.20703 14.0823C9.16118 14.1083 9.10588 14.1083 8.99529 14.1083H7.00486C6.89426 14.1083 6.83896 14.1083 6.79312 14.0823C6.74727 14.0564 6.71881 14.009 6.6619 13.9142L5.67273 12.2662C5.61581 12.1714 5.58735 12.1239 5.54151 12.098C5.49566 12.072 5.44036 12.072 5.32977 12.072H3.33945C3.2288 12.072 3.17347 12.072 3.12761 12.0461C3.08176 12.0201 3.0533 11.9726 2.9964 11.8777L2.0152 10.2415C1.9551 10.1413 1.92505 10.0911 1.92505 10.0358C1.92505 9.9804 1.9551 9.93029 2.0152 9.83006L2.98951 8.20528C3.04963 8.10502 3.07969 8.0549 3.07969 7.99951C3.07968 7.94413 3.04961 7.89401 2.98946 7.79377L2.01529 6.17011C1.95514 6.06987 1.92507 6.01975 1.92507 5.96437C1.92506 5.90899 1.95512 5.85886 2.01524 5.7586L2.9964 4.1224C3.0533 4.0275 3.08176 3.98005 3.12761 3.95408C3.17347 3.92811 3.2288 3.92811 3.33945 3.92811H5.32977C5.44036 3.92811 5.49566 3.92811 5.54151 3.90216C5.58735 3.87621 5.61581 3.82879 5.67273 3.73397L6.6619 2.08599C6.71881 1.99116 6.74727 1.94375 6.79312 1.9178C6.83896 1.89185 6.89426 1.89185 7.00486 1.89185H8.99529C9.10588 1.89185 9.16118 1.89185 9.20703 1.9178C9.25287 1.94375 9.28133 1.99116 9.33825 2.08599L10.3274 3.73397C10.3843 3.82879 10.4128 3.87621 10.4586 3.90216C10.5045 3.92811 10.5598 3.92811 10.6704 3.92811H12.6607C12.7713 3.92811 12.8267 3.92811 12.8725 3.95408C12.9184 3.98005 12.9468 4.0275 13.0037 4.1224L13.9849 5.7586C14.045 5.85886 14.0751 5.90899 14.0751 5.96437C14.0751 6.01975 14.045 6.06987 13.9849 6.17011L13.0107 7.79377Z" stroke="currentColor" stroke-miterlimit="10"></path></svg><span>结论上限</span></button><button type="button" class="dup-btn" data-variant="outline" title="把画像维度导出为 Markdown 文档"><svg class="dup-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1"><path d="M13.5 2.5H2.5C1.94772 2.5 1.5 2.94772 1.5 3.5V4.5C1.5 5.05228 1.94772 5.5 2.5 5.5H13.5C14.0523 5.5 14.5 5.05228 14.5 4.5V3.5C14.5 2.94772 14.0523 2.5 13.5 2.5Z" stroke="currentColor"></path><path d="M2.5 5.5V13.5C2.5 13.7652 2.60536 14.0196 2.79289 14.2071C2.98043 14.3946 3.23478 14.5 3.5 14.5H12.5C12.7652 14.5 13.0196 14.3946 13.2071 14.2071C13.3946 14.0196 13.5 13.7652 13.5 13.5V5.5" stroke="currentColor"></path><path d="M6.5 9.5H9.5" stroke="currentColor"></path></svg><span>导出</span></button></div>
+  </div>
+
+      <div class="dup-group">
+        <div class="dup-group-head">
+          <span class="dup-group-name">日常画像</span>
+          <span class="dup-group-total">4 条生效</span>
+        </div>
+        <div class="dup-group-hint">性格、爱好、生活背景与当前状态 —— 只有你亲口说过的才会进来，所以这里条目少、置信度偏低是正常的</div>
+        
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">性格与沟通</span>
+          <span class="dup-section-count" title="性格倾向、对待反馈的态度、期望的回复详略与结构、语气与术语密度">1 条生效</span>
+        </div>
+        <div class="dup-group-hint">性格倾向、对待反馈的态度、期望的回复详略与结构、语气与术语密度</div>
+        
+        
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">喜欢先看结论再看推理，讨厌铺垫</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="warning" title="置信度">置信度 中</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-11 19:15">生效</span>
+            <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-337271ce · 第 8 轮 · 2026-10-11 19:15
+    原文：先把结论给我，细节我自己看">来源 1 处</span>
+            
+          </div>
+        </div>
+      </div>
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">兴趣与爱好</span>
+          <span class="dup-section-count" title="长期兴趣、业余投入、持续关注的话题与内容品类">2 条生效</span>
+        </div>
+        <div class="dup-group-hint">长期兴趣、业余投入、持续关注的话题与内容品类</div>
+        
+        
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">玩 galgame（日式视觉小说），对病娇题材有兴趣</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="success" title="置信度">置信度 高</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-15 19:15">生效</span>
+            <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-712a9a19 · 第 1 轮 · 2026-10-15 19:15
+    原文：我想玩女主为病娇的galgame">来源 1 处</span>
+            
+          </div>
+        </div>
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">玩 galgame，并且偏好叙事驱动、有心理描写张力的题材</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="warning" title="置信度">置信度 中</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-16 19:15">生效</span>
+            <span class="dup-chip" data-tone="mixed" title="一部分依据是用户的原话，一部分是模型的推断；置信度按「含推断」的上限计算">依据 · 用户的话 &amp; 模型应答</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-712a9a19 · 第 2 轮 · 2026-10-16 19:15
+    原文：继续推进病娇题材 galgame 的横向调研">来源 1 处</span>
+            
+          </div>
+        </div>
+      </div>
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">生活与身份</span>
+          <span class="dup-section-count" title="身份与专业背景、作息与时间安排、生活层面的固定约束">0 条生效</span>
+        </div>
+        <div class="dup-group-hint">身份与专业背景、作息与时间安排、生活层面的固定约束</div>
+        <div class="dup-empty">暂无证据</div>
+        
+      </div>
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">当前在做</span>
+          <span class="dup-section-count" title="正在推进的项目、阶段目标、近期关注点（有明确时效，过时可废弃）">1 条生效</span>
+        </div>
+        <div class="dup-group-hint">正在推进的项目、阶段目标、近期关注点（有明确时效，过时可废弃）</div>
+        
+        
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">在改人物画像插件的面板与提炼策略</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="success" title="置信度">置信度 高</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-19 19:15">生效</span>
+            <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+            
+            <span class="dup-chip" data-tone="info">手动</span>
+          </div>
+        </div>
+      </div>
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">近期状态</span>
+          <span class="dup-section-count" title="近段时间的处境与情绪：忙闲节奏、压力来源、正在等待或纠结的事（短期结论，会自然过期）">0 条生效</span>
+        </div>
+        <div class="dup-group-hint">近段时间的处境与情绪：忙闲节奏、压力来源、正在等待或纠结的事（短期结论，会自然过期）</div>
+        <div class="dup-empty">暂无证据</div>
+        
+      </div>
+      </div>
+      <div class="dup-group">
+        <div class="dup-group-head">
+          <span class="dup-group-name">技术画像</span>
+          <span class="dup-group-total">6 条生效</span>
+        </div>
+        <div class="dup-group-hint">能力与技术栈、工作方式、风险边界与敏感点</div>
+        
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">能力与技术栈</span>
+          <span class="dup-section-count" title="熟练的语言/框架/平台、擅长的任务类型、专业与行业背景、常用工具与编辑器偏好">2 条生效 · 2 条历史</span>
+        </div>
+        <div class="dup-group-hint">熟练的语言/框架/平台、擅长的任务类型、专业与行业背景、常用工具与编辑器偏好</div>
+        
+        
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">熟练 Python 与 PowerShell，Node 只到能读改脚本</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="success" title="置信度">置信度 高</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-08 19:15">生效</span>
+            <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-337271ce · 第 2 轮 · 2026-10-08 19:15
+    原文：我主要用 Python 和 PowerShell">来源 1 处</span>
+            
+          </div>
+        </div>
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">看起来对 PowerShell 管道比较熟</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="low" title="置信度">置信度 低</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-17 19:15">生效</span>
+            <span class="dup-chip" data-tone="warning" title="依据出自模型自己的回答/解释，不是用户明说；置信度上限受此限制">依据 · 模型应答</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-d34e7b2f · 第 7 轮 · 2026-10-17 19:15
+    原文：我给你解释过管道怎么串">来源 1 处</span>
+            
+          </div>
+        </div>
+        <div class="dup-entry" data-status="superseded">
+          <div class="dup-entry-text">偏好用 PowerShell 而不是 node 做文件操作</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="success" title="置信度">置信度 高</span>
+            <span class="dup-chip" data-tone="outline" title="首次 2026-09-30 19:15">已取代</span>
+            <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-337271ce · 第 8 轮 · 2026-09-30 19:15
+    原文：最好用 PowerShell 而不是 node">来源 1 处</span>
+            
+          </div>
+        </div>
+        <div class="dup-entry" data-status="retired">
+          <div class="dup-entry-text">长期只写 Java，不碰前端</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="low" title="置信度">置信度 低</span>
+            <span class="dup-chip" data-tone="outline" title="首次 2026-09-24 19:15">已废弃</span>
+            <span class="dup-chip" data-tone="warning" title="依据出自模型自己的回答/解释，不是用户明说；置信度上限受此限制">依据 · 模型应答</span>
+            
+            <span class="dup-chip" data-tone="info">手动</span>
+          </div>
+        </div>
+      </div>
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">工作方式</span>
+          <span class="dup-section-count" title="节奏与粒度、计划性与验证习惯；正确性/效率/可维护性/隐私/成本的优先级；不确定时如何收敛">2 条生效</span>
+        </div>
+        <div class="dup-group-hint">节奏与粒度、计划性与验证习惯；正确性/效率/可维护性/隐私/成本的优先级；不确定时如何收敛</div>
+        
+        
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">先要方案再动手，改动前必须先备份</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="success" title="置信度">置信度 高</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-12 19:15">生效</span>
+            <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-337271ce · 第 4 轮 · 2026-10-17 19:15
+    原文：（此处的原文摘录）">来源 1 处</span>
+            
+          </div>
+        </div>
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">更看重可维护性，而不是最快跑通</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="warning" title="置信度">置信度 中</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-14 19:15">生效</span>
+            <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-d34e7b2f · 第 5 轮 · 2026-10-17 19:15
+    原文：（此处的原文摘录）">来源 1 处</span>
+            
+          </div>
+        </div>
+      </div>
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">风险边界</span>
+          <span class="dup-section-count" title="不接受的做法、红线、必须先确认的事项、授权尺度">1 条生效</span>
+        </div>
+        <div class="dup-group-hint">不接受的做法、红线、必须先确认的事项、授权尺度</div>
+        
+        
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">不允许未确认就删除或覆盖已有文件</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="success" title="置信度">置信度 高</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-10 19:15">生效</span>
+            <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-337271ce · 第 6 轮 · 2026-10-17 19:15
+    原文：（此处的原文摘录）">来源 1 处</span>
+            
+          </div>
+        </div>
+      </div>
+      <div class="dup-section">
+        <div class="dup-section-head">
+          <span class="dup-section-name">敏感点</span>
+          <span class="dup-section-count" title="反复纠正的点、易被误解之处、明确表达过不满的行为">1 条生效</span>
+        </div>
+        <div class="dup-group-hint">反复纠正的点、易被误解之处、明确表达过不满的行为</div>
+        
+        
+        <div class="dup-entry" data-status="active">
+          <div class="dup-entry-text">反复纠正过：不要用 iframe 方案</div>
+          <div class="dup-entry-foot">
+            <button type="button" class="dup-edit-chip" data-action="edit">编辑</button>
+            <span class="dup-chip" data-tone="success" title="置信度">置信度 高</span>
+            <span class="dup-chip" data-tone="neutral" title="首次 2026-10-16 19:15">生效</span>
+            <span class="dup-chip" data-tone="info" title="依据出自用户自己的原话">依据 · 用户的话</span>
+            <span class="dup-src-count" data-inline="source" title="来源（1 处）：
+· session-d34e7b2f · 第 3 轮 · 2026-10-17 19:15
+    原文：（此处的原文摘录）">来源 1 处</span>
+            
+          </div>
+        </div>
+      </div>
+      </div>
+          </div>
+        </div>
+      </div>
+      <div class="notes">
+        <h1>人物画像面板 · 本地设计预览</h1>
+        <p>这是一个<strong>完全离线</strong>的自包含 HTML：没有 CDN、没有外链字体、没有图片请求、没有数据请求。它由
+        <code>test/preview/build-preview.mjs</code> 从插件源码里的真实样式表与官方图标几何生成，因此所见即
+        <code>client.js</code> 实际渲染的结构与配色。</p>
+        <h2>对照点</h2>
+        <ul>
+          <li>按钮：官方 <code>sm</code> 规格（28px 高、8px 圆角）；主操作品牌填充，次要 0.5px 描边，刷新为 ghost。</li>
+          <li>页签：官方分段轨道 + 滑动指示器，选中 600 字重。</li>
+          <li>状态标签：官方 Tag 几何（17px 行高、全圆角），按状态色 10~12% 染色。</li>
+          <li>行内操作：24px 小按钮。**置信度的升/降两个按钮常驻可见**，编辑与删除仍悬停才显现。</li>
+          <li>置信度：高 = 绿、中 = 琥珀、**低 = 红**（同一套 Tag 几何，只换色板）。</li>
+          <li>来源：只显示 来源 N 处，把鼠标放上去才显示会话 · 轮次 · 时间 · 原文。</li>
+          <li>依据标签：依据 · 用户的话 / 依据 · 模型应答 / <strong>依据 · 用户的话 &amp; 模型应答</strong>（两种依据合并后同时标注，置信度按「含推断」的上限计算）。</li>
+          <li>检索：置顶在画像维度页，输入即筛（内存内过滤），命中显示维度/置信度/依据/来源计数并高亮关键词，点击可定位。</li>
+          <li>页签（4 个，顺序固定）：画像维度 · 我的备注 · 会话记录 · 证据时间线。</li>
+          <li>分组：日常画像 / 技术画像两级标题，粘性吸顶。</li>
+          <li>备注：已经有独立页签，不再在画像维度里重复一份。</li>
+        </ul>
+        <h2>与线上的差异</h2>
+        <p>这里用的是演示数据，且不含交互逻辑（点击不会真的改数据）。如果你的应用面板与此预览不一致——
+        尤其是<strong>依旧是空白</strong>——那说明问题在插件宿主侧的渲染链路，而不在这份结构/样式里。</p>
+      </div>
+    </div>
+    <script>
+      document.getElementById('theme').addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+      });
+    </script>
+  </body>
+</html>

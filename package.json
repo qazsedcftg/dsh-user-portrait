@@ -1,0 +1,67 @@
+{
+  "name": "dsh-user-portrait",
+  "version": "1.1.0",
+  "description": "Extracts and accumulates a structured, evidence-backed portrait of the user from every DSH session",
+  "license": "MIT",
+  "author": "loliisgood",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qazsedcftg/dsh-user-portrait.git"
+  },
+  "homepage": "https://github.com/qazsedcftg/dsh-user-portrait#readme",
+  "bugs": {
+    "url": "https://github.com/qazsedcftg/dsh-user-portrait/issues"
+  },
+  "type": "module",
+  "main": "./index.js",
+  "icon": "./icon.svg",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "user-portrait",
+    "memory",
+    "profile",
+    "persona"
+  ],
+  "engines": {
+    "dsh": ">=0.2.0-rc.2",
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node test/run-all.mjs",
+    "check:package": "node test/package-check.mjs",
+    "pack:check": "npm pack --dry-run"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "client.js",
+    "cordis.patch.yml",
+    "icon.svg",
+    "locale/*.json",
+    "assets",
+    "README.zh.md"
+  ],
+  "meta": {
+    "title": "人物画像",
+    "description": "自动提取每次会话中你提出的内容，累积成结构化人物画像（日常画像 + 技术画像共 9 个维度）；可在输入框旁按会话开启画像提示，并提供按官方设计系统绘制的查阅与手动纠正面板。"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ]
+    }
+  }
+}

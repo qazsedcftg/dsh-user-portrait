@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+
+# runtime data and local noise
+.dsh/
+debug.log
+*.before-basis-migration
+*.before-timeline-compaction
+
+# generated preview / screenshot output (the committed copy lives in assets/)
+test/preview/out/
+test/preview/preview-shot.png
+test/preview/screenshot-runner.cjs
+*.tgz
+
+# editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

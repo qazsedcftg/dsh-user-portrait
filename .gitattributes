@@ -1,0 +1,7 @@
+# Keep the working tree LF on every platform so the suites and the published
+# tarball see the same bytes; Windows checkouts would otherwise rewrite them.
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
+*.tgz binary

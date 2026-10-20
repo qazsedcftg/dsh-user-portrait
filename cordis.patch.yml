@@ -1,0 +1,18 @@
+- insert:
+    - id: user-portrait
+      name: 'dsh-user-portrait'
+      config:
+        # 画像数据目录：留空即用 `<DSH_HOME>/user-portrait`（没有 DSH_HOME 时用
+        # `~/.dsh/user-portrait`）。这里刻意不写死路径 —— 绝对路径只在作者本机成立，
+        # 装到别人机器上会指向不存在的位置；需要换位置时再填相对或绝对路径。
+        # 内容：profile.json / profile.md / evidence.jsonl / sessions/ / turns/ / views/
+        dataDir: ''
+        # 历史回填默认关闭：画像从新会话开始积累。
+        # 想一次性把过去的会话也提炼进画像时，把 backfillOnStart 改成 true 并重启，
+        # 或在「人物画像」面板里点“回填全部历史会话”，也可以让我调用
+        # portrait_maintain(action: "backfill")。
+        backfillOnStart: false
+        # 每积累多少轮重新提炼一次画像维度（1 = 每轮）。
+        synthesizeEveryTurns: 1
+        # 后台提炼使用的模型路由：provider/model 都留空则自动沿用你当前的默认模型。
+        # 需要固定时再两个一起填，例如 provider: deepseek-official / model: deepseek-flash。
