@@ -16,7 +16,9 @@ import { join } from 'node:path';
 import { CLIENT, PLUGIN_ROOT } from '../_paths.mjs';
 
 const OUT_DIR = join(PLUGIN_ROOT, 'assets');
-const OUT_FILE = join(OUT_DIR, 'user-portrait-preview.html');
+/** `--empty` renders the panel's first-run state: no conclusions, no annotation column. */
+const EMPTY = process.argv.includes('--empty');
+const OUT_FILE = join(OUT_DIR, EMPTY ? 'panel-empty.html' : 'user-portrait-preview.html');
 
 const source = await readFile(CLIENT, 'utf8');
 
@@ -171,6 +173,14 @@ const demo = {
   ],
 };
 
+if (EMPTY) {
+  // First-run state: nothing has been extracted yet, so every dimension is empty
+  // and the demo conclusions, notes and progress counters are dropped.
+  demo.notes = [];
+  demo.progress = { digests: 0, evidence: 0, backfill: { active: false, done: 0, total: 0 } };
+  demo.dimensions = demo.dimensions.map((dimension) => ({ ...dimension, entries: [] }));
+}
+
 // --------------------------------------------------------------------- helpers
 const escapeHtml = (value) =>
   String(value)
@@ -250,8 +260,8 @@ const header = `
       ${button('icon', '', 'settings').replace('<span></span>', '')}
     </div>
     <div class="dup-meta">${totalActive} 条生效结论 · 覆盖 ${covered}/${demo.dimensions.length} 个维度 · 逐轮摘要 ${demo.progress.digests} 个会话 · 证据 ${demo.progress.evidence} 条</div>
-    ${statusBar('info', '正在与 Host 同步…')}
-    ${statusBar('success', '已重新合并画像')}
+${EMPTY ? '' : `    ${statusBar('info', '正在与 Host 同步…')}
+    ${statusBar('success', '已重新合并画像')}`}
     <div class="dup-toolbar">
       ${button('primary', '立即重新提炼', 'sparkle', '立即重新提炼（不重读会话）&#10;· 只用已经提炼出来的证据&#10;· 只把现有证据重新合并，不重读会话&#10;· 遵守结论上限；黑名单证据不参与')}
       ${button('outline', '回填全部历史会话', 'refresh', '回填全部历史会话（只补没提炼过的）&#10;· 跳过子代理会话&#10;· 每个会话取最近 24 轮&#10;· 跑完自动合并；黑名单证据照样排除')}
@@ -305,7 +315,7 @@ const addSection = `
  * The pinned 检索 block, shown with a live query so the hit rendering (dimension,
  * confidence, basis, source count and the marked keyword) is visible.
  */
-const searchQuery = 'galgame';
+const searchQuery = EMPTY ? '' : 'galgame';
 const searchHits = demo.dimensions.flatMap((dimension) =>
   dimension.entries
     .filter((entry) => entry.text.toLowerCase().includes(searchQuery))
@@ -574,6 +584,10 @@ const page = `<!doctype html>
       }
       /* ---- the panel stylesheet, verbatim from client.js ---- */
 ${css}
+${EMPTY ? `      body { background: #fff; }
+      .stage { padding: 0; gap: 0; }
+      .pane { width: 340px; height: auto; min-height: 0; border: 0; border-radius: 0; box-shadow: none; }
+      .notes, .toggle, #theme { display: none; }` : ''}
     </style>
   </head>
   <body>
@@ -584,8 +598,8 @@ ${css}
 ${header}
 ${tabs}
           <div class="dup-body">
-${searchSection}
-${discardSection}
+${EMPTY ? '' : searchSection}
+${EMPTY ? '' : discardSection}
 ${addSection}
 ${groupsMarkup}
           </div>

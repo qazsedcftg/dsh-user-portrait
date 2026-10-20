@@ -45,7 +45,7 @@
     "cordis.patch.yml",
     "icon.svg",
     "locale/*.json",
-    "assets",
+    "assets/panel-empty.png",
     "README.zh.md"
   ],
   "meta": {

@@ -18,8 +18,8 @@ at 0.1.0 instead of the internal 1.x numbering.
   GitHub Actions workflow. Suites resolve paths from their own location, so a
   checkout works on any machine; suites that need a local DSH installation or
   sample portrait data print an explicit `SKIP` instead of failing.
-- `assets/screenshot.png` and `assets/user-portrait-preview.html` for the
-  marketplace card and offline design review.
+- `assets/panel-empty.png` (the first-run state) and
+  `assets/user-portrait-preview.html` for the README and offline design review.
 - Package metadata required for publishing: `engines`, `keywords`, `scripts`,
   and the un-scoped package name `dsh-user-portrait`.
 
@@ -42,6 +42,9 @@ at 0.1.0 instead of the internal 1.x numbering.
   `dsh-user-portrait` across `package.json`, `cordis.patch.yml`, the client
   loader id, and every module docstring.
 - The bundled `debug.log` (browser crashpad noise) was removed.
+- The READMEs were reduced to what a user needs; the design notes, runtime
+  constraints, verification log, known limitations and file tree were dropped.
+  The demo screenshot was replaced by a first-run empty-state image.
 - The twelve suites now share `test/_harness.mjs` for assertions and summary,
   resolve every path from `test/_paths.mjs`, and `npm run check:package`
   rejects machine-specific paths under `test/`.
