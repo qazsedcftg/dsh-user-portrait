@@ -1,6 +1,6 @@
 {
   "name": "dsh-user-portrait",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Learns your habits, skills and working style from everyday conversations and work summaries, keeps an evidence-backed portrait you can use as resume material, and offers a prompt hint plus tools that let the model consult it on demand.",
   "license": "MIT",
   "author": "loliisgood",
