@@ -4,6 +4,24 @@ All notable changes to this plugin are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 semantic versioning.
 
+## [0.1.2] - 2026-10-20
+
+### Changed
+
+- `assets/panel-empty.png` resized to one third of its dimensions (680×1400 →
+  227×467; 145 KB → 56 KB), so the README shows a compact preview and the
+  published tarball is smaller.
+
+## [0.1.1] - 2026-10-20
+
+### Changed
+
+- The READMEs were reduced to six sections; the demo screenshot was replaced
+  with a first-run empty-state image.
+- Plugin, repository and marketplace descriptions now name the three intended
+  uses: habits and skills learned from conversations, resume / self-review
+  material, and a prompt hint with tools the model can consult.
+
 ## [0.1.0] - 2026-10-20
 
 First public release. The plugin had been developed and used locally; this
