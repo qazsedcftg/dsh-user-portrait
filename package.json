@@ -1,6 +1,6 @@
 {
   "name": "dsh-user-portrait",
-  "version": "1.1.0",
+  "version": "0.1.0",
   "description": "Extracts and accumulates a structured, evidence-backed portrait of the user from every DSH session",
   "license": "MIT",
   "author": "loliisgood",

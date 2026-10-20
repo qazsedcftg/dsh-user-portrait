@@ -4,10 +4,11 @@ All notable changes to this plugin are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 semantic versioning.
 
-## [1.1.0] - 2026-10-20
+## [0.1.0] - 2026-10-20
 
-First public npm release. The plugin had been developed and used locally; this
-release makes the package installable and self-describing.
+First public release. The plugin had been developed and used locally; this
+release makes the package installable and self-describing. Versions now start
+at 0.1.0 instead of the internal 1.x numbering.
 
 ### Added
 
@@ -44,8 +45,3 @@ release makes the package installable and self-describing.
 - The twelve suites now share `test/_harness.mjs` for assertions and summary,
   resolve every path from `test/_paths.mjs`, and `npm run check:package`
   rejects machine-specific paths under `test/`.
-
-## [1.0.0] - 2026-10-15
-
-Internal release used while the panel, the four tools, and the per-turn
-synthesis pipeline were being built. Not published.

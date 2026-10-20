@@ -40,7 +40,7 @@
 dsh plugin --profile web add dsh-user-portrait
 
 # The desktop app: the marketplace installs an exact version
-dsh plugin --profile desktop add dsh-user-portrait@1.1.0
+dsh plugin --profile desktop add dsh-user-portrait@0.1.0
 ```
 
 Reload the plugin (or restart DSH). No build step and no extra dependencies:

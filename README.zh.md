@@ -16,7 +16,7 @@
 dsh plugin --profile web add dsh-user-portrait
 
 # 桌面版：装精确版本（市场一键安装也是这个形式）
-dsh plugin --profile desktop add dsh-user-portrait@1.1.0
+dsh plugin --profile desktop add dsh-user-portrait@0.1.0
 ```
 
 装好后重启 DSH（或在插件管理器里重载），右栏就会出现「人物画像」页签。不需要构建步骤，也不需要额外依赖。
